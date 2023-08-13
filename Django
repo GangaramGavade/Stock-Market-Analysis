@@ -1,0 +1,60 @@
+python -m venv venv
+source venv/bin/activate
+pip install django
+django-admin startproject gas_utility_project
+cd gas_utility_project
+python manage.py startapp consumer_services
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class ServiceRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    ]
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    request_type = models.CharField(max_length=100)
+    details = models.TextField()
+    attached_files = models.FileField(upload_to='service_requests/', blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+
+
+from django.shortcuts import render, redirect
+from .models import ServiceRequest
+
+def submit_service_request(request):
+    
+def view_service_request(request, request_id):
+    
+def track_service_requests(request):
+   
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('submit/', views.submit_service_request, name='submit_service_request'),
+    path('requests/<int:request_id>/', views.view_service_request, name='view_service_request'),
+    path('track/', views.track_service_requests, name='track_service_requests'),
+   
+]
+from django import forms
+from .models import ServiceRequest
+
+class ServiceRequestForm(forms.ModelForm):
+    class Meta:
+        model = ServiceRequest
+        fields = ['request_type', 'details', 'attached_files']
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+
+
+
+
